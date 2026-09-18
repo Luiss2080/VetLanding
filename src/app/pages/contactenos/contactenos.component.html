@@ -53,27 +53,44 @@
 
 
 <!-- FORMULARIO DE DUDAS -->
-<div class="container my-5"> 
+<div class="container my-5">
   <!-- Título principal del formulario de dudas -->
   <h2 class="text-center mb-4">¿Tienes dudas? ¡Escríbelas aquí!</h2>
-  <div class="row">
-      <div class="col-12">
-          <!-- Contenedor de elementos del formulario -->
-          <div class="hstack gap-3 justify-content-start">
-              <!-- Campo de texto donde el usuario escribe su duda -->
-              <input class="form-control input-animate text-box-custom" type="text" placeholder="Escribe tu duda aquí..." aria-label="Escribe tu duda aquí...">
-              
-              <!-- Botón para enviar la duda -->
-              <button type="button" class="btn btn-purple btn-animate btn-custom btn-enviar">Enviar</button>
-              
-              <!-- Separador vertical entre los botones -->
-              <div class="vr separator-custom"></div>
-              
-              <!-- Botón para restablecer el campo de texto -->
-              <button type="button" class="btn btn-purple btn-animate btn-custom btn-reset">Restablecer</button>
-          </div>
-      </div>
-  </div>
+  <form [formGroup]="formDuda" (ngSubmit)="enviarDuda()" novalidate>
+    <div class="row">
+        <div class="col-12">
+            <!-- Contenedor de elementos del formulario -->
+            <div class="hstack gap-3 justify-content-start align-items-start">
+                <div class="flex-grow-1">
+                  <label for="dudaMensaje" class="visually-hidden">Escribe tu duda</label>
+                  <input
+                      id="dudaMensaje"
+                      class="form-control input-animate text-box-custom"
+                      type="text"
+                      placeholder="Escribe tu duda aquí..."
+                      formControlName="mensaje"
+                      [class.is-invalid]="d['mensaje'].invalid && d['mensaje'].touched"
+                      aria-describedby="dudaMensajeError">
+                  <div id="dudaMensajeError" class="invalid-feedback" *ngIf="d['mensaje'].invalid && d['mensaje'].touched">
+                      Escribe al menos 5 caracteres para poder enviarte una respuesta útil.
+                  </div>
+                </div>
+
+                <!-- Botón para enviar la duda -->
+                <button type="submit" class="btn btn-purple btn-animate btn-custom btn-enviar">Enviar</button>
+
+                <!-- Separador vertical entre los botones -->
+                <div class="vr separator-custom"></div>
+
+                <!-- Botón para restablecer el campo de texto -->
+                <button type="button" class="btn btn-purple btn-animate btn-custom btn-reset" (click)="restablecerDuda()">Restablecer</button>
+            </div>
+            <p class="text-success mt-2" *ngIf="dudaEnviada" role="status">
+                Se abrió tu cliente de correo con la duda ya escrita, lista para enviar a {{ 'contacto' }}&#64;zoofipets.com.
+            </p>
+        </div>
+    </div>
+  </form>
 </div>
 
 
@@ -193,56 +210,77 @@
       <!-- Subtítulo del formulario -->
       <h2 style="font-size: 1.5rem; margin-bottom: 20px; color: #555; text-align: center;">Completa los campos a continuación</h2>
       <!-- Inicio del formulario -->
-      <form class="row g-3">
+      <form class="row g-3" [formGroup]="formOpinion" (ngSubmit)="enviarOpinion()" novalidate>
         <!-- Campo de nombre -->
         <div class="col-md-6">
           <label for="validationServerName" class="form-label">Nombre</label>
-          <input type="text" class="form-control is-valid" id="validationServerName" placeholder="Ingresa tu nombre" required>
-          <div class="valid-feedback">
-            ¡Se ve bien!
+          <input type="text" class="form-control" id="validationServerName" placeholder="Ingresa tu nombre"
+                 formControlName="nombre"
+                 [class.is-valid]="o['nombre'].valid && o['nombre'].touched"
+                 [class.is-invalid]="o['nombre'].invalid && o['nombre'].touched">
+          <div class="valid-feedback">¡Se ve bien!</div>
+          <div class="invalid-feedback" *ngIf="o['nombre'].invalid && o['nombre'].touched">
+            Ingresa tu nombre (al menos 2 caracteres).
           </div>
         </div>
         <!-- Campo de correo electrónico -->
         <div class="col-md-6">
           <label for="validationServerEmail" class="form-label">Correo Electrónico</label>
-          <input type="email" class="form-control is-invalid" id="validationServerEmail" placeholder="correo@ejemplo.com" required>
-          <div id="validationServerEmailFeedback" class="invalid-feedback">
+          <input type="email" class="form-control" id="validationServerEmail" placeholder="correo@ejemplo.com"
+                 formControlName="email"
+                 [class.is-valid]="o['email'].valid && o['email'].touched"
+                 [class.is-invalid]="o['email'].invalid && o['email'].touched">
+          <div id="validationServerEmailFeedback" class="invalid-feedback" *ngIf="o['email'].invalid && o['email'].touched">
             Por favor, ingresa un correo válido.
           </div>
         </div>
         <!-- Campo de tipo de opinión -->
         <div class="col-md-12">
           <label for="validationServerType" class="form-label">Tipo de opinión</label>
-          <select class="form-select is-valid" id="validationServerType" required>
+          <select class="form-select" id="validationServerType"
+                  formControlName="tipo"
+                  [class.is-valid]="o['tipo'].valid && o['tipo'].touched"
+                  [class.is-invalid]="o['tipo'].invalid && o['tipo'].touched">
             <option selected disabled value="">Selecciona...</option>
             <option value="queja">Queja</option>
             <option value="recomendacion">Recomendación</option>
             <option value="felicitacion">Felicitación</option>
           </select>
-          <div id="validationServerTypeFeedback" class="valid-feedback">
-            ¡Perfecto!
+          <div id="validationServerTypeFeedback" class="valid-feedback">¡Perfecto!</div>
+          <div class="invalid-feedback" *ngIf="o['tipo'].invalid && o['tipo'].touched">
+            Selecciona un tipo de opinión.
           </div>
         </div>
         <!-- Campo de mensaje -->
         <div class="col-md-12">
           <label for="validationServerMessage" class="form-label">Mensaje</label>
-          <textarea class="form-control is-invalid" id="validationServerMessage" rows="4" placeholder="Escribe aquí tu opinión..." required></textarea>
-          <div id="validationServerMessageFeedback" class="invalid-feedback">
-            Por favor, escribe un mensaje.
+          <textarea class="form-control" id="validationServerMessage" rows="4" placeholder="Escribe aquí tu opinión..."
+                    formControlName="mensaje"
+                    [class.is-valid]="o['mensaje'].valid && o['mensaje'].touched"
+                    [class.is-invalid]="o['mensaje'].invalid && o['mensaje'].touched"></textarea>
+          <div id="validationServerMessageFeedback" class="invalid-feedback" *ngIf="o['mensaje'].invalid && o['mensaje'].touched">
+            Escribe un mensaje de al menos 10 caracteres.
           </div>
         </div>
         <!-- Confirmación de la opinión -->
         <div class="col-md-12">
           <div class="form-check">
-            <input class="form-check-input is-invalid" type="checkbox" value="" id="invalidCheck3" aria-describedby="invalidCheck3Feedback" required>
+            <input class="form-check-input" type="checkbox" id="invalidCheck3"
+                   formControlName="confirmacion"
+                   [class.is-invalid]="o['confirmacion'].invalid && o['confirmacion'].touched"
+                   aria-describedby="invalidCheck3Feedback">
             <label class="form-check-label" for="invalidCheck3">
               Confirmo que mi opinión es honesta y respetuosa.
             </label>
-            <div id="invalidCheck3Feedback" class="invalid-feedback">
+            <div id="invalidCheck3Feedback" class="invalid-feedback" *ngIf="o['confirmacion'].invalid && o['confirmacion'].touched">
               Debes confirmar antes de enviar.
             </div>
           </div>
         </div>
+
+        <p class="text-success text-center" *ngIf="enviado" role="status">
+          Se abrió tu cliente de correo con tu opinión ya redactada, lista para enviar.
+        </p>
 
         <!-- Botón para enviar el formulario -->
         <div class="text-center">
