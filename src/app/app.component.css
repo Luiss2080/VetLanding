@@ -1,0 +1,20 @@
+/* Enlace "saltar al contenido" para personas que navegan con teclado:
+   permanece invisible hasta que recibe foco (Tab), para no molestar a
+   quien usa mouse/touch pero sí ahorrarle a quien usa teclado tener que
+   pasar por todo el menú de navegación en cada página. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 2000;
+  background: #6f42c1;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 6px 0;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.skip-link:focus {
+  left: 0;
+}
